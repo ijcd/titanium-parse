@@ -48,11 +48,18 @@ This project wraps the Parse javascript and REST APIs for use in Appcelerator Ti
 
 This project makes use of rvm, guard, rake, coffeescript, and tishadow for building and testing.
 
-The project is partially spec'd. Please add more tests in src/spec
+Make the testapp:
 
 ```
+    rake wipe testapp appify
+```
+
+The project is partially spec'd. Please add more tests in src/spec
+
+````
     bundle install
     bundle exec guard  # will build the files (TODO: move this to Rake) - watches for edits in testing as well
+    rake testapp       # will build a test app
     rake appify        # will create a stand-alone tishadow server for use in testing
     rake clean         # start over
     tishadow spec      # run the tests

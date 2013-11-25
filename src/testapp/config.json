@@ -1,0 +1,20 @@
+{
+        "global": {
+                  "parse_appid": "your appid here",
+                  "parse_jskey": "your jskey here",
+                  "parse_restkey": "your restkey here"
+        }, 
+        "env:development": {
+                  "remote_couchdb_server": "http://127.0.0.1:5984/picsides"
+        }, 
+        "env:test": {
+                  "remote_couchdb_server": "http://10.0.200.110:5984/picsides"
+        }, 
+        "env:production": {
+        }, 
+        "os:android": {},
+        "os:blackberry": {},
+        "os:ios": {},
+        "os:mobileweb": {},
+        "dependencies": {}
+}

@@ -1,25 +1,50 @@
+desc "Remove all intermediate files"
 task :clean do
-    `[ -d testapp ] && (cd testapp && tishadow clear && ti clean && rm -rf app spec)`
+    system '[ -d testapp ] && (cd testapp && tishadow clear && ti clean && rm -rf app spec)'
 end
 
+desc "Remove test app and all intermediate files"
 task :wipe => :clean do
-  `rm -rf testapp tmp`
+  system 'rm -rf testapp tmp'
 end
 
+desc "Perform the 'alloy compile' part of the build process"
 task :alloy do
-    `(cd testapp && alloy compile --config platform=ios)`
+    system '(cd testapp && alloy compile --config platform=ios)'
 end
 
+desc "Perform the 'ti build' part of the build process"
 task :ti do
-    `(cd testapp && ti build -p ios)`
+    system '(cd testapp && ti build -p ios)'
 end
 
-task :compile do
-    Rake::Task[:alloy].invoke
-    Rake::Task[:ti].invoke
+desc "Compile and install a non-tishadow version of titanium-parse and deploy it to the device"
+task :deploy => [:alloy, :ti] 
+
+desc "Create a testapp for tishadow testing of titanium-parse"
+directory "testapp" do
+  system 'titanium create --name=titaniumparse --id=com.ijcd.titaniumparse --platforms=android,ipad,iphone,mobileweb --workspace-dir tmp'
+  system 'mv tmp/titaniumparse testapp'
+  system 'rm testapp/Resources/app.js'
+  system '(cd testapp && alloy new && ti clean)'
+  Rake::Task[:install].invoke
 end
 
-task :appify do
-    `(cd testapp && mkdir -p ../tmp && tishadow appify -d ../tmp -o localhost)`
-    `(cd tmp && ti build -p ios)`
+desc "Copy files into the development app"
+task :install => :testapp do
+  system 'rsync -r src/lib/ testapp/app/lib/'
+  system 'rsync -r src/testapp/ testapp/app/'
+  Rake::Task[:alloy].invoke
 end
+
+desc "Convert testapp into a standalone tishadow app and deploy it to the device"
+task :appify => :install do
+    system '(cd testapp && mkdir -p ../tmp && tishadow appify -d ../tmp -o localhost)'
+    system '(cd tmp && ti build -p ios)'
+end
+
+task :spec do
+  system '(cd testapp && tishadow spec)'
+end
+
+task :default => :testapp

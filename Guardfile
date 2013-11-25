@@ -49,7 +49,11 @@ def build_other(from)
   return if from =~ /\.(coffee|jade|ltss|styl|swp)$/i
   return unless File.file?(from)
 
-  to = from.gsub(/^src\//, 'testapp/app/')
+  if from =~ %r{^src/testapp}
+    to = from.gsub(/^src\/testapp\//, 'testapp/app/')
+  else
+    to = from.gsub(/^src\//, 'testapp/app/')
+  end
   return if File.exist?(to) && (File.mtime(to) > File.mtime(from))
 
   UI.info "COPY: #{from} -> #{to}"
