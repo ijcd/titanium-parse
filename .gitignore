@@ -1,0 +1,14 @@
+# global
+*.swp
+.DS_Store
+\#*
+.#*
+
+# mobile
+build.log
+build
+npm-debug.log
+tmp
+.map
+
+testapp
