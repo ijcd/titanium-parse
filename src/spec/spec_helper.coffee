@@ -1,4 +1,3 @@
-
 # quick beforeAll (place at front of suite)
 beforeAll = (fn) ->
   it('[beforeAll]', fn)
@@ -42,3 +41,16 @@ dropAllWhileWaiting = (klass) ->
   # should start after we wait on the query.find() promise
   runs ->
     waitsForPromise(p) for p in promises
+
+# generate simple callbacks to resolve a promise
+waitsWithPromiseCallbacks = (fn) ->
+  p = new Parse.Promise()
+  fn
+    success: (res) ->
+      #dump "success", res
+      p.resolve(res)
+    error: (err) ->
+      #dump "error", err
+      p.reject(err)
+  waitsForPromise(p)
+  p

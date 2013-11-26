@@ -179,7 +179,7 @@ describe "Parse.Query", ->
             expect( r.get("playerAge") ).toBeUndefined()
 
 
-  it "fetches the rest of an object after a select query", ->
+  it "fetches the rest of an object after a parital query", ->
     query = new Parse.Query(GameScore)
     query.exists("score")
     query.select("score")

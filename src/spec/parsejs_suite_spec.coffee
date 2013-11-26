@@ -13,3 +13,4 @@ Ti.include('spec/parse/parsejs_facebook_specs.js')
 Ti.include('spec/parse/parsejs_cloudfunctions_spec.js')
 Ti.include('spec/parse/parsejs_geopoints_spec.js')
 Ti.include('spec/parse/parsejs_push_specs.js')
+

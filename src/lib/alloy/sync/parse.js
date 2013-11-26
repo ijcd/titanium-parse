@@ -40,20 +40,35 @@ module.exports.sync = function(method, model, options) {
   ].join('');
 
   // need object for non-create
-  if (method != "create") {
+  if (object_id && method != "create") {
     url += "/" + object_id;
   }
   
   var data = {};
   if (!options.data && model && (method == 'create' || method == 'update')) {
-    // delete data.createdAt
-    // delete data.updatedAt
-    data = JSON.stringify(model.toJSON());
+
+    data = model.toJSON()
+    delete data.createdAt // Parse reserved word causes update to fail
+    delete data.updatedAt // Parse reserved word causes update to fail
+    data = JSON.stringify(data)
+
   } else if (options.query && method == "read") { 
-    data = encodeURI("where=" + JSON.stringify(options.query.where));
+
+    url += "?" + _.map(_.pairs(options.query), function (pair) {
+      var key = pair[0];
+      var val = pair[1];
+
+      if (key === "where") {
+        val = JSON.stringify(val);
+      }
+
+      return [key, val].join('=')
+
+    }).join("&");
+
   }   
   
-  Alloy.Globals.dump(http_method, url, data, options.success, options.error);
+  // Alloy.Globals.dump(http_method, url, data, options.success, options.error);
   return Parse._ajax(http_method, url, data, options.success, options.error);
 };
 
